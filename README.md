@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Advanced Authentication System 
 
 Welcome to the **Advanced Authentication System**! This document provides a detailed overview of the **Signup** and **Verify Email Routes** functionality, including their purpose, flow, and how to utilize the provided utility files to ensure a secure and scalable user authentication process.
