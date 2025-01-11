@@ -1,16 +1,43 @@
-# Advanced Authentication System 
+# Advanced Authentication System - Authentication Routes
 
-Welcome to the **Advanced Authentication System**! This document provides a detailed overview of the **Signup** and **Verify Email Routes** functionality, including their purpose, flow, and how to utilize the provided utility files to ensure a secure and scalable user authentication process.
+Welcome to the **Advanced Authentication System**! This document provides a detailed overview of the authentication routes, including their purpose, flow, and how to utilize the provided utility files to ensure a secure and scalable user authentication process.
 
 ---
 
-## 🚀 **Signup Route Overview**
+## 🚀 **Authentication Routes Overview**
 
-The **Signup Route** allows users to create a new account by providing their **name**, **email**, and **password**. The route handles:
-- Input validation using **Joi**
-- Password hashing using **bcrypt**
-- Generating a **verification token**
-- Setting a **JWT token** in cookies for authentication
+This system includes the following routes for user authentication and account management:
+
+### **Endpoints:**
+- **POST** `/api/auth/signup` - User Signup
+- **POST** `/api/auth/login` - User Login
+- **POST** `/api/auth/logout` - User Logout
+- **POST** `/api/auth/verify-email` - Email Verification
+- **POST** `/api/auth/forgot-password` - Forgot Password
+- **POST** `/api/auth/reset-password/:token` - Reset Password
+
+These routes are defined in the `auth.routes.js` file, which imports the necessary controller functions and sets up the endpoints.
+
+```javascript
+import express from 'express';
+import { forgotPassword, resetPassword, loginUser, logoutUser, signupUser, verifyEmail } from '../controllers/auth.controller.js';
+
+const router = express.Router();
+
+router.post("/signup", signupUser);
+router.post("/login", loginUser);
+router.post("/logout", logoutUser);
+
+router.post("/verify-email", verifyEmail);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
+
+export default router;
+```
+
+---
+
+## 📄 **Signup Route Workflow**
 
 ### **Endpoint**: `/api/auth/signup`
 - **Method**: `POST`
@@ -20,17 +47,102 @@ The **Signup Route** allows users to create a new account by providing their **n
 
 ## ✅ **Verify Email Route Overview**
 
-The **Verify Email Route** allows users to verify their email address using a **6-digit verification token** that was generated during signup. This step is crucial for account activation and security.
-
 ### **Endpoint**: `/api/auth/verify-email`
 - **Method**: `POST`
 - **Description**: Handles email verification by accepting a verification token and updating the user's account status to verified if the token is valid.
 
-### **Verify Email Route Workflow**
-1. User receives a **6-digit verification token** via email after successful signup.
-2. The user submits the token to the **Verify Email Route**.
-3. The system validates the token and updates the user's account status to **verified**.
-4. If the token is invalid or expired, an appropriate error message is returned.
+---
+
+## 🔐 **Login Route Workflow**
+
+### **Endpoint**: `/api/auth/login`
+- **Method**: `POST`
+- **Description**: Authenticates the user by verifying their email and password, and sets a JWT token in the response cookie for future requests.
+
+#### **Example Request:**
+```json
+{
+    "email": "ajay@example.com",
+    "password": "password123"
+}
+```
+
+#### **Expected Response:**
+```json
+{
+    "success": true,
+    "message": "Login successfully",
+    "user": {
+        "id": "64abc1234def567890",
+        "name": "Ajay Chaudhari",
+        "email": "ajay@example.com"
+    }
+}
+```
+
+---
+
+## 🚪 **Logout Route Workflow**
+
+### **Endpoint**: `/api/auth/logout`
+- **Method**: `POST`
+- **Description**: Logs out the user by clearing the JWT token from the cookies.
+
+#### **Expected Response:**
+```json
+{
+    "success": true,
+    "message": "Logout Successfully"
+}
+```
+
+---
+
+## 🔄 **Forgot Password Route Workflow**
+
+### **Endpoint**: `/api/auth/forgot-password`
+- **Method**: `POST`
+- **Description**: Sends a password reset link to the user's email address if the account exists.
+
+#### **Example Request:**
+```json
+{
+    "email": "ajay@example.com"
+}
+```
+
+#### **Expected Response:**
+```json
+{
+    "success": true,
+    "message": "Password reset link sent to your email"
+}
+```
+
+---
+
+## 🔑 **Reset Password Route Workflow**
+
+### **Endpoint**: `/api/auth/reset-password/:token`
+- **Method**: `POST`
+- **Description**: Resets the user's password using a valid reset token.
+
+#### **Example Request:**
+- **POST** `/api/auth/reset-password/abcdef123456`
+- **Body:**
+```json
+{
+    "password": "newPassword123"
+}
+```
+
+#### **Expected Response:**
+```json
+{
+    "success": true,
+    "message": "Password reset successful"
+}
+```
 
 ---
 
@@ -53,66 +165,3 @@ The **Verify Email Route** allows users to verify their email address using a **
 - **How it Works**: Signs a JWT with the user ID, sets the token to expire in 7 days, and stores it as an HTTP-only cookie for security.
 
 ---
-
-## ✅ **Environment Variables**
-Make sure you have a `.env` file with the following environment variables:
-
-- **JWT_SECRET**: Your secret key for signing JWT tokens.
-- **NODE_ENV**: The environment mode (e.g., development or production).
-
-Example:
-```
-JWT_SECRET=your_jwt_secret_key
-NODE_ENV=development
-```
-
----
-
-## 🧪 **Testing the Signup and Verify Email Routes**
-
-Use a tool like **Postman** to test the **Signup** and **Verify Email** routes.
-
-### **Signup Route Example Request:**
-- **POST** `/api/auth/signup`
-- **Body**:
-```json
-{
-    "name": "Ajay Chaudhari",
-    "email": "ajay@example.com",
-    "password": "password123"
-}
-```
-
-### **Expected Signup Response:**
-```json
-{
-    "success": true,
-    "message": "User created successfully",
-    "user": {
-        "id": "64abc1234def567890",
-        "name": "Ajay Chaudhari",
-        "email": "ajay@example.com"
-    }
-}
-```
-
-### **Verify Email Route Example Request:**
-- **POST** `/api/auth/verify-email`
-- **Body**:
-```json
-{
-    "email": "ajay@example.com",
-    "token": "123456"
-}
-```
-
-### **Expected Verify Email Response:**
-```json
-{
-    "success": true,
-    "message": "Email verified successfully"
-}
-```
-=======
-
->>>>>>> 5f24ea48b0fa3dbb659242a66bd0e3165920cc29
