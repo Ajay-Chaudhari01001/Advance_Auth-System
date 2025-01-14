@@ -91,7 +91,7 @@ export const verifyEmail = async (req, res) => {
             },
         });
     } catch (error) {
-        console.log("Error in verify email ", error)
+        // console.log("Error in verify email ", error)
         res.status(500).json({ success: false, message: error.message });
     }
 }
@@ -130,7 +130,7 @@ export const loginUser = async (req, res) => {
             },
         });
     } catch (error) {
-        console.log("Error in Login User ", error)
+        // console.log("Error in Login User ", error)
         res.status(500).json({ success: false, message: error.message });
     }
 }
@@ -163,7 +163,7 @@ export const forgotPassword = async (req, res) => {
 
         res.status(200).json({ success: true, message: "Password reset link sent to your email" });
     } catch (error) {
-        console.log("Error in forgotPassword ", error);
+        // console.log("Error in forgotPassword ", error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -194,7 +194,7 @@ export const resetPassword = async (req, res) => {
 
         res.status(200).json({ success: true, message: "Password reset successful" });
     } catch (error) {
-        console.log("Error in resetPassword ", error);
+        // console.log("Error in resetPassword ", error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -205,7 +205,6 @@ export const checkAuth = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: "User not found" });
         }
-        console.log(req.userId)
         res.status(200).json({ success: true, user });
     } catch (error) {
         console.log("Error in checkAuth ", error);
